@@ -2,6 +2,17 @@
 {
     public class Bord
     {
+        public Bord()
+        {
+            for (int x = 0; x < 5; x++)
+            {
+                for (int y = 0; y < 5; y++)
+                {
+                    _board[x, y] = new Veld();
+                }
+            }
+        }
+
         private readonly Veld[,] _board = new Veld[5, 5];
 
         public Veld this[Positie pos] => this[pos.X, pos.Y];
