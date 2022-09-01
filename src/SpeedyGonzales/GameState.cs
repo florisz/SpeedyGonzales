@@ -15,8 +15,8 @@ namespace SpeedyGonzales
     {
         public GameState Play(Move move)
         {
-            var onzeKaarten = Kaarten.Where(x => x.Owner != null && x.Owner == Wij).ToArray();
-            var hunKaarten = Kaarten.Where(x => x.Owner != null && x.Owner != Wij).ToArray();
+            var onzeKaarten = Kaarten.Where(x => x.Owner != null && x.Owner == SpelerAanZet).ToArray();
+            var hunKaarten = Kaarten.Where(x => x.Owner != null && x.Owner != SpelerAanZet).ToArray();
             var stackKaart = Kaarten.First(x => x.Owner == null);
 
             var speelKaart = onzeKaarten
