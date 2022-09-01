@@ -24,26 +24,7 @@ var wij = Team.Parse(wijInput);
 
 while (true)
 {
-    var bordInput = Enumerable.Range(0, 5)
-        .Select(_ => InputLine())
-        .ToArray();
-    var kaartInput = Enumerable.Range(0, 5)
-        .Select(_ => InputLine())
-        .ToArray();
-    var aantalOptiesInput = InputLine();
-    int aantalOpties = int.Parse(aantalOptiesInput);
-    var optiesInput = Enumerable.Range(0, aantalOpties)
-        .Select(_ => InputLine())
-        .ToArray();
+    var gameState = GameState.Parse(wij, InputLine);
 
-    var moves = optiesInput
-        .Select(Move.Parse)
-        .ToArray();
-
-    var bord = Bord.Parse(bordInput);
-    var kaarten = kaartInput
-        .Select(Kaart.Parse)
-        .ToArray();
-
-    ReturnLine(moves[0].ToString());
+    ReturnLine(gameState.Moves[0].ToString());
 }
