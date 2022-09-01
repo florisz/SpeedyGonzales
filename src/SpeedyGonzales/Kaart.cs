@@ -10,7 +10,12 @@
 
         public Kaart MoveToStack()
         {
-            return this with { Owner = null };
+            return this with { 
+                Owner = null,
+                Bewegingen = Bewegingen
+                    .Select(b => b.Flip())
+                    .ToArray()
+            };
         }
 
         public static Kaart Parse(string input)
