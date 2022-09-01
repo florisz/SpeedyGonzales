@@ -8,6 +8,10 @@ namespace SpeedyGonzales
         public static readonly Team A = new Team("A");
         public static readonly Team B = new Team("B");
 
+        public Team TegenStander
+            => this == A
+            ? B
+            : A;
 
         public static Team Parse(string input)
             => input switch
@@ -16,5 +20,4 @@ namespace SpeedyGonzales
                 "1" => B,
                 _ => throw new InvalidOperationException($"Ongeldig team {input}")
             };
-    };
-}
+    }}

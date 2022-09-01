@@ -8,14 +8,43 @@ namespace SpeedyGonzales
 {
     public record GameState(
         Team Wij,
+        Team SpelerAanZet,
         Bord Bord,
         Kaart[] Kaarten,
         Move[] Moves)
     {
+        public Team Hullie => Wij.TegenStander;
+
         //public GameState Play(Move move)
         //{
+        //    var onzeKaarten = Kaarten.Where(x => x.Owner != null && x.Owner == Wij).ToArray();
+        //    var hunKaarten = Kaarten.Where(x => x.Owner != null && x.Owner != Wij).ToArray();
+        //    var stackKaart = Kaarten.First(x => x.Owner == null);
+
+        //    var onzeKaart = onzeKaarten
+        //        .FirstOrDefault(x => x.Id == move.KaartId)
+        //        ?? throw new InvalidOperationException("Kaart is niet beschikbaar");
+        //    var onzeAndereKaart = onzeKaarten
+        //        .Where(x => x.Id != move.KaartId)
+        //        .First();
         //    var newBord = Bord.Clone();
-        //    var movePlayer = this[move.Van];
+        //    var van = newBord[move.Van];
+        //    var naar = newBord[move.Naar];
+        //    if (van.Renner == null || van.Renner.Team != Wij)
+        //    {
+        //        throw new InvalidOperationException($"Wij zijn {Wij}, en proberen move {move}, maar het bord is {Bord}");
+        //    }
+        //    naar.Renner = van.Renner;
+        //    van.Renner = null;
+
+        //    onzeKaart = onzeKaart.ChangeOwner(null);
+        //    stackKaart = stackKaart.ChangeOwner(Wij);
+        //    return new GameState(
+        //        Wij,
+        //        Hullie,
+        //        newBord,
+        //        xxx,
+        //        xxx);
         //}
 
         public static GameState Parse(Team wij, Func<string> inputLine)
@@ -42,6 +71,7 @@ namespace SpeedyGonzales
                 .ToArray();
 
             return new GameState(
+                wij,
                 wij,
                 bord,
                 kaarten,

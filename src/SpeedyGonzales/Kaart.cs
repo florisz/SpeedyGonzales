@@ -5,6 +5,9 @@
         string Id,
         Vector[] Bewegingen)
     {
+        public Kaart ChangeOwner(Team? owner) 
+            => this with { Owner = owner };
+
         public static Kaart Parse(string input)
         {
             var parts = input.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
