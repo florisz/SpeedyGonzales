@@ -12,5 +12,8 @@
             var naar = Positie.Parse(parts[2]);
             return new Move(parts[0], van, naar);
         }
+
+        public override string ToString()
+            => $"{KaartId} {Van} {Naar}";
     }
 }

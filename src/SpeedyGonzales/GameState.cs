@@ -12,6 +12,12 @@ namespace SpeedyGonzales
         Kaart[] Kaarten,
         Move[] Moves)
     {
+        //public GameState Play(Move move)
+        //{
+        //    var newBord = Bord.Clone();
+        //    var movePlayer = this[move.Van];
+        //}
+
         public static GameState Parse(Team wij, Func<string> inputLine)
         {
             var bordInput = Enumerable.Range(0, 5)

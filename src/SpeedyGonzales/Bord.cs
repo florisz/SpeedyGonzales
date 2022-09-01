@@ -47,5 +47,18 @@
 
             return result;
         }
+
+        public Bord Clone()
+        {
+            var result = new Bord();
+            for (int x = 0; x < 5; x++)
+            {
+                for (int y = 0; y < 5; y++)
+                {
+                    result[x, y].Renner = this[x, y].Renner;
+                }
+            }
+            return result;
+        }
     }
 }
