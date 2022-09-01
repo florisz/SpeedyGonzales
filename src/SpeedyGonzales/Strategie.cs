@@ -19,7 +19,6 @@ namespace SpeedyGonzales
             private GameState? _stateAfterMove;
             private Score? _cachedScoreForSpelerAanZet;
             private State[]? _nextStates;
-            private State? _bestSubMove;
 
             public GameState StateAfterMove
             {
@@ -45,16 +44,11 @@ namespace SpeedyGonzales
                 }
             }
 
-            public Score ScoreForUs
-                => (InitialState.Wij == InitialState.SpelerAanZet)
-                ? ScoreForSpelerAanZet
-                : ScoreForSpelerAanZet.Inverse();
-
             public IEnumerable<State> TakeInNextLevel()
             {
                 if (_nextStates == null)
                 {
-                    var score = ScoreForUs;
+                    var score = ScoreForSpelerAanZet;
                     if (score.IsGameOver)
                     {
                         _nextStates = Array.Empty<State>();
@@ -72,23 +66,23 @@ namespace SpeedyGonzales
                                 .Take(3)
                                 .ToArray();
                         }
-
-                        _bestSubMove = _nextStates
-                            .FirstOrDefault();
                     }
                 }
                 return _nextStates;
             }
 
-            public int ScoreForUsAsCombinedNumber
+            public int ScoreForMoveAsCombinedNumber
             {
                 get 
                 {
-                    if (_bestSubMove == null) 
+                    if (_nextStates == null || _nextStates.Length == 0) 
                     {
-                        return ScoreForUs.AsNumber;
+                        return ScoreForSpelerAanZet.AsNumber;
                     }
-                    return (ScoreForUs.AsNumber * 3 + _bestSubMove.ScoreForUsAsCombinedNumber * 2) / 5;
+                    var bestNextSubMoveForOpponent = _nextStates
+                        .OrderByDescending(x => x.ScoreForMoveAsCombinedNumber)
+                        .First();
+                    return (ScoreForSpelerAanZet.AsNumber * 3 + (-bestNextSubMoveForOpponent.ScoreForMoveAsCombinedNumber) * 2) / 5;
                 }
             }
         }
@@ -132,7 +126,7 @@ namespace SpeedyGonzales
             walker.Walk(3, TimeSpan.FromMilliseconds(90));
 
             return initialStates
-                .OrderByDescending(x => x.ScoreForUsAsCombinedNumber)
+                .OrderByDescending(x => x.ScoreForMoveAsCombinedNumber)
                 .FirstOrDefault()
                 ?.Move;
         }
