@@ -25,6 +25,21 @@
             }
         }
 
+        public IEnumerable<Positie> GetRennerPosities(Team team)
+        {
+            for (int x = 0; x < 5; x++)
+            {
+                for (int y = 0; y < 5; y++)
+                {
+                    var veld = _board[x, y];
+                    if (veld.Renner != null && veld.Renner.Team == team)
+                    {
+                        yield return new Positie(x, y);
+                    }
+                }
+            }
+        }
+
         public static Bord Parse(string[] input)
         {
             var result = new Bord();

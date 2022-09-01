@@ -15,5 +15,8 @@
             var y = input[1] - '1';
             return new Positie(x, y);
         }
+
+        public Positie Add(Vector vector)
+            => new Positie(X + vector.DeltaX, Y + vector.DeltaY);
     }
 }
