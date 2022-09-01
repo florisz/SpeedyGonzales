@@ -54,13 +54,28 @@ namespace SpeedyGonzales
             {
                 if (_nextStates == null)
                 {
-                    _nextStates = StateAfterMove.Moves
-                        .Select(m => new State(StateAfterMove, m, Depth + 1))
-                        .ToArray();
+                    var score = ScoreForUs;
+                    if (score.IsGameOver)
+                    {
+                        _nextStates = Array.Empty<State>();
+                    }
+                    else
+                    {
+                        _nextStates = StateAfterMove.Moves
+                            .Select(m => new State(StateAfterMove, m, Depth + 1))
+                            .OrderByDescending(x => x.ScoreForSpelerAanZet.AsNumber)
+                            .ToArray();
 
-                    _bestSubMove = _nextStates
-                        .OrderByDescending(x => x.ScoreForSpelerAanZet.AsNumber)
-                        .FirstOrDefault();
+                        if (Depth >= 2)
+                        {
+                            _nextStates = _nextStates
+                                .Take(3)
+                                .ToArray();
+                        }
+
+                        _bestSubMove = _nextStates
+                            .FirstOrDefault();
+                    }
                 }
                 return _nextStates;
             }
