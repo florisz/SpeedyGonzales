@@ -6,22 +6,11 @@ using System.Threading.Tasks;
 
 namespace SpeedyGonzales
 {
-    public enum Team { 
-        A, 
-        B 
-    };
 
     public record Renner(
         bool IsLeader,
         Team Team)
     {
-    }
-
-    public record struct Positie(
-        int X,
-        int Y)
-    {
-        public bool IsOnBoard => X >= 0 && Y >= 0 && X < 5 && Y < 5;
     }
 
     public record Veld()
@@ -31,7 +20,7 @@ namespace SpeedyGonzales
 
     public class Bord
     {
-        private readonly Veld[,] _board = new Veld[5, 5]; 
+        private readonly Veld[,] _board = new Veld[5, 5];
 
         public Veld this[Positie pos] => this[pos.X, pos.Y];
 
@@ -78,48 +67,49 @@ namespace SpeedyGonzales
         }
     }
 
-    public record Beweging(
-        int DeltaX,
-        int DeltaY);
-
     public record Kaart(
         Team? Owner,
-        string CardId,
-        Beweging[] Bewegingen)
+        string Id,
+        Vector[] Bewegingen)
     {
+        public static Kaart Parse(string input)
+        {
+            var parts = input.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
-        //public static Kaart Parse(string input)
-        //{
-        //    var result = new Kaart();
+            Team? owner = parts[0] == "-1"
+                ? null
+                : Team.Parse(parts[0]);
+            var id = parts[1];
+            var bewegingen = new List<Vector>();
 
-        //    //for (int x = 0; x < 5; x++)
-        //    //{
-        //    //    for (int y = 0; y < 5; y++)
-        //    //    {
-        //    //        switch (input[y][x])
-        //    //        {
-        //    //            case 'A':
-        //    //                result[x, y].Renner = new Renner(IsLeader: true, Team.A);
-        //    //                break;
-        //    //            case 'a':
-        //    //                result[x, y].Renner = new Renner(IsLeader: false, Team.A);
-        //    //                break;
-        //    //            case 'B':
-        //    //                result[x, y].Renner = new Renner(IsLeader: true, Team.B);
-        //    //                break;
-        //    //            case 'b':
-        //    //                result[x, y].Renner = new Renner(IsLeader: false, Team.B);
-        //    //                break;
-        //    //            case '.':
-        //    //                result[x, y].Renner = null;
-        //    //                break;
-        //    //            default:
-        //    //                throw new InvalidOperationException($"Invalid bord definitie: {string.Join(Environment.NewLine, input)}");
-        //    //        }
-        //    //    }
-        //    //}
+            for (int idx = 2; idx < parts.Length; idx += 2)
+            {
+                var dX = int.Parse(parts[idx]);
+                var dY = int.Parse(parts[idx + 1]);
+                if (dX != 0 || dY != 0)
+                {
+                    bewegingen.Add(new Vector(dX, dY));
+                }
+            }
 
-        //    return result;
-        //}
+            return new Kaart(
+                owner,
+                id,
+                bewegingen.ToArray());
+        }
+    }
+
+    public record Move(
+        string KaartId,
+        Positie Van,
+        Positie Naar)
+    {
+        public static Move Parse(string input)
+        {
+            var parts = input.Split(' ', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            var van = Positie.Parse(parts[1]);
+            var naar = Positie.Parse(parts[2]);
+            return new Move(parts[0], van, naar);
+        }
     }
 }
