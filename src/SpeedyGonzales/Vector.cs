@@ -1,6 +1,6 @@
 ﻿namespace SpeedyGonzales
 {
-    public record Beweging(
+    public record Vector(
         int DeltaX,
         int DeltaY);
 }
