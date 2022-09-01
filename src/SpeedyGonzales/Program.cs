@@ -29,6 +29,15 @@ var wij = Team.Parse(wijInput);
 while (true)
 {
     var gameState = GameState.Parse(wij, InputLine);
-
-    ReturnLine(gameState.Moves[0].ToString());
+    if (gameState.Moves.Length == 0)
+    {
+        ReturnLine("PASS"); // Bump
+    }
+    else
+    {
+        var move = gameState.Moves[0];
+        var newGameState = gameState.Play(move);
+        newGameState.WriteTo(Console.Error.WriteLine);
+        ReturnLine(move.ToString());
+    }
 }

@@ -1,4 +1,6 @@
-﻿namespace SpeedyGonzales
+﻿using System.Text;
+
+namespace SpeedyGonzales
 {
     public record Kaart(
         Team? Owner,
@@ -42,6 +44,22 @@
                 owner,
                 id,
                 bewegingen.ToArray());
+        }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder(40);
+            sb.Append(Owner == null ? "-1" : Owner.Number.ToString());
+            sb.Append(' ');
+            sb.Append(Id);
+            foreach (var b in Bewegingen)
+            {
+                sb.Append(' ');
+                sb.Append(b.DeltaX.ToString());
+                sb.Append(' ');
+                sb.Append(b.DeltaY.ToString());
+            }
+            return sb.ToString();
         }
     }
 }

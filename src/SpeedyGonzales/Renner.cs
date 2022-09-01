@@ -11,5 +11,9 @@ namespace SpeedyGonzales
         bool IsLeader,
         Team Team)
     {
+        public override string ToString()
+            => IsLeader
+            ? Team.Naam.ToUpperInvariant()
+            : Team.Naam.ToLowerInvariant();
     }
 }

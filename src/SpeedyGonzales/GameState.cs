@@ -106,5 +106,19 @@ namespace SpeedyGonzales
                 kaarten,
                 moves);
         }
+
+        public void WriteTo(Action<string> writeLine)
+        {
+            Bord.WriteTo(writeLine);
+            foreach (var kaart in Kaarten)
+            {
+                writeLine(kaart.ToString());
+            }
+            writeLine(Moves.Length.ToString());
+            foreach (var move in Moves)
+            {
+                writeLine(move.ToString());
+            }
+        }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace SpeedyGonzales
+﻿using System.Text;
+
+namespace SpeedyGonzales
 {
     public class Bord
     {
@@ -85,6 +87,19 @@
                 }
             }
             return result;
+        }
+
+        public void WriteTo(Action<string> writeLine)
+        {
+            for (int y = 0; y < 5; y++)
+            {
+                var sb = new StringBuilder(5);
+                for (int x = 0; x < 5; x++)
+                {
+                    sb.Append(this[x, y].ToString());
+                }
+                writeLine(sb.ToString());
+            }
         }
     }
 }
