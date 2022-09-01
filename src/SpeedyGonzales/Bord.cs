@@ -4,28 +4,27 @@ namespace SpeedyGonzales
 {
     public class Bord
     {
-        public Bord()
-        {
-            for (int x = 0; x < 5; x++)
-            {
-                for (int y = 0; y < 5; y++)
-                {
-                    _board[x, y] = new Veld();
-                }
-            }
-        }
+        private const int XWidth = 5;
+        private const int YHeight = 5;
+        private const int VeldCount = XWidth * YHeight;
 
-        private readonly Veld[,] _board = new Veld[5, 5];
+        private readonly Veld[] _board = new Veld[VeldCount];
 
-        public Veld this[Positie pos] => this[pos.X, pos.Y];
+        //public Bord()
+        //{
+        //    for (int i = 0; i < VeldCount; i++)
+        //    {
+        //        _board[i] = new Veld();
+        //    }
+        //}
 
-        public Veld this[int x, int y]
-        {
-            get
-            {
-                return _board[x, y];
-            }
-        }
+        private int CalcPos(int x, int y) => y * XWidth + x;
+
+        public void SetRenner(int x, int y, Renner? renner) => _board[CalcPos(x, y)].Renner = renner;
+
+        public Veld this[Positie pos] => _board[CalcPos(pos.X, pos.Y)];
+
+        public Veld this[int x, int y] => _board[CalcPos(x, y)];
 
         public IEnumerable<Positie> GetRennerPosities(Team team)
         {
@@ -33,7 +32,7 @@ namespace SpeedyGonzales
             {
                 for (int y = 0; y < 5; y++)
                 {
-                    var veld = _board[x, y];
+                    var veld = this[x, y];
                     if (veld.Renner != null && veld.Renner.Team == team)
                     {
                         yield return new Positie(x, y);
@@ -53,19 +52,19 @@ namespace SpeedyGonzales
                     switch (input[y][x])
                     {
                         case 'A':
-                            result[x, y].Renner = new Renner(IsLeader: true, Team.A);
+                            result.SetRenner(x,y, new Renner(IsLeader: true, Team.A));
                             break;
                         case 'a':
-                            result[x, y].Renner = new Renner(IsLeader: false, Team.A);
+                            result.SetRenner(x, y, new Renner(IsLeader: false, Team.A));
                             break;
                         case 'B':
-                            result[x, y].Renner = new Renner(IsLeader: true, Team.B);
+                            result.SetRenner(x, y, new Renner(IsLeader: true, Team.B));
                             break;
                         case 'b':
-                            result[x, y].Renner = new Renner(IsLeader: false, Team.B);
+                            result.SetRenner(x, y, new Renner(IsLeader: false, Team.B));
                             break;
                         case '.':
-                            result[x, y].Renner = null;
+                            result.SetRenner(x, y, null);
                             break;
                         default:
                             throw new InvalidOperationException($"Invalid bord definitie: {string.Join(Environment.NewLine, input)}");
@@ -79,12 +78,9 @@ namespace SpeedyGonzales
         public Bord Clone()
         {
             var result = new Bord();
-            for (int x = 0; x < 5; x++)
+            for (int i = 0; i < VeldCount; i++)
             {
-                for (int y = 0; y < 5; y++)
-                {
-                    result[x, y].Renner = this[x, y].Renner;
-                }
+                result._board[i] = this._board[i];
             }
             return result;
         }

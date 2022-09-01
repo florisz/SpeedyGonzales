@@ -150,7 +150,7 @@ namespace SpeedyGonzales
         }
     }
 
-    public record Score(
+    public record struct Score(
         bool Winst,
         bool Verlies,
         int Renners,
@@ -173,5 +173,12 @@ namespace SpeedyGonzales
                 return Renners * 2 - Tegenstanders;
             }
         }
+
+        public Score Inverse()
+            => new Score(
+                Winst: this.Verlies,
+                Verlies: this.Winst,
+                Renners: this.Tegenstanders,
+                Tegenstanders: this.Renners);
     }
 }

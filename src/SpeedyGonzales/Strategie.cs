@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,46 +11,115 @@ namespace SpeedyGonzales
 {
     public class Strategie
     {
-        private int? ScoreMove(GameState gameState, Move move, int recurseLeft)
+        public record State(
+            GameState InitialState,
+            Move Move,
+            int Depth)
         {
-            var newState = gameState.Play(move);
-            var score = newState.GetScore(gameState.SpelerAanZet);
+            private GameState? _stateAfterMove;
+            private Score? _cachedScoreForSpelerAanZet;
+            private State[]? _nextStates;
+            private State? _bestSubMove;
 
-            if (recurseLeft == 0 || score.IsGameOver)
+            public GameState StateAfterMove
             {
-                return score.AsNumber;
+                get
+                {
+                    if (_stateAfterMove == null)
+                    {
+                        _stateAfterMove = InitialState.Play(Move);
+                    }
+                    return _stateAfterMove;
+                }
             }
-            var bestMoveAfter = GetBestMove(newState, recurseLeft - 1);
-            if (bestMoveAfter == null)
+
+            public Score ScoreForSpelerAanZet
             {
-                return null;
+                get
+                {
+                    if (_cachedScoreForSpelerAanZet == null)
+                    {
+                        _cachedScoreForSpelerAanZet = StateAfterMove.GetScore(InitialState.SpelerAanZet);
+                    }
+                    return _cachedScoreForSpelerAanZet.Value;
+                }
             }
-            return (score.AsNumber * 3 + -bestMoveAfter.Value.Item2 * 2) / 5; 
+
+            public Score ScoreForUs
+                => (InitialState.Wij == InitialState.SpelerAanZet)
+                ? ScoreForSpelerAanZet
+                : ScoreForSpelerAanZet.Inverse();
+
+            public IEnumerable<State> TakeInNextLevel()
+            {
+                if (_nextStates == null)
+                {
+                    _nextStates = StateAfterMove.Moves
+                        .Select(m => new State(StateAfterMove, m, Depth + 1))
+                        .ToArray();
+
+                    _bestSubMove = _nextStates
+                        .OrderByDescending(x => x.ScoreForSpelerAanZet.AsNumber)
+                        .FirstOrDefault();
+                }
+                return _nextStates;
+            }
+
+            public int ScoreForUsAsCombinedNumber
+            {
+                get 
+                {
+                    if (_bestSubMove == null) 
+                    {
+                        return ScoreForUs.AsNumber;
+                    }
+                    return (ScoreForUs.AsNumber * 3 + _bestSubMove.ScoreForUsAsCombinedNumber * 2) / 5;
+                }
+            }
         }
 
-        Random _rnd = new Random();
-
-        private (Move, int)? GetBestMove(GameState gameState, int recurseLeft)
+        public class Walker
         {
-            var moveResults = gameState.Moves
-                .Select(move => new
+            private Queue<State> _backLog = new();
+
+            public Walker(IEnumerable<State> states)
+            {
+                _backLog = new(states);
+            }
+            
+            public void Walk(int maxDepth, TimeSpan maxDuration)
+            {
+                var sw = Stopwatch.StartNew();
+                while (_backLog.TryDequeue(out var nextState))
                 {
-                    Move = move,
-                    Score = ScoreMove(gameState, move, recurseLeft),
-                    Random = _rnd.Next()
-                })
-                .Where(x => x.Score != null)
-                .OrderByDescending(x => x.Score).ThenBy(x => x.Random)
-                .ToList();
-            return moveResults
-                .Select(x => (x.Move, x.Score!.Value))
-                .FirstOrDefault();
+                    foreach (var subState in nextState.TakeInNextLevel())
+                    {
+                        if (nextState.Depth < maxDepth)
+                        {
+                            _backLog.Enqueue(subState);
+                        }
+                    }
+                    if (sw.Elapsed > maxDuration)
+                    {
+                        break;
+                    }
+                }
+            }
         }
 
         public Move? GetBestMove(GameState gameState)
         {
-            var bestMove = GetBestMove(gameState, 3);
-            return bestMove?.Item1;
+            var initialStates = gameState.Moves
+                .Select(m => new State(gameState, m, 0))
+                .ToArray();
+
+            var walker = new Walker(initialStates);
+            walker.Walk(3, TimeSpan.FromMilliseconds(90));
+
+            return initialStates
+                .OrderByDescending(x => x.ScoreForUsAsCombinedNumber)
+                .FirstOrDefault()
+                ?.Move;
         }
     }
 }

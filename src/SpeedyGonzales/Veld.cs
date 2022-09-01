@@ -1,9 +1,8 @@
 ﻿namespace SpeedyGonzales
 {
-    public record Veld()
+    public record struct Veld(
+        Renner? Renner)
     {
-        public Renner? Renner { get; set; }
-
         public override string ToString()
             => Renner == null
             ? " "
