@@ -23,7 +23,7 @@ namespace SpeedyGonzales
             {
                 return null;
             }
-            return (score.AsNumber * 3 + bestMoveAfter.Value.Item2) / 4; 
+            return (score.AsNumber * 3 + -bestMoveAfter.Value.Item2 * 2) / 5; 
         }
 
         Random _rnd = new Random();
