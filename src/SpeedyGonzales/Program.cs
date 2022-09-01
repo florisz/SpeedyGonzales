@@ -36,12 +36,15 @@ while (true)
     }
     else
     {
+        var stopWatch = Stopwatch.StartNew();
+
         var bestMove = strategie.GetBestMove(gameState);
         var move = bestMove ?? gameState.Moves[0];
 
         var newGameState = gameState.Play(move);
         newGameState.WriteTo(Console.Error.WriteLine);
 
-        ReturnLine(move.ToString());
+        stopWatch.Stop();
+        ReturnLine(move.ToString() + " - elapsed:" + stopWatch.ElapsedMilliseconds.ToString());
     }
 }
