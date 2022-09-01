@@ -35,7 +35,7 @@ namespace SpeedyGonzales
             naar.Renner = van.Renner;
             van.Renner = null;
 
-            speelKaart = speelKaart.ChangeOwner(null);
+            speelKaart = speelKaart.MoveToStack();
             stackKaart = stackKaart.ChangeOwner(SpelerAanZet);
             var volgendeSpeler = SpelerAanZet.TegenStander;
             var kaarten = new[]

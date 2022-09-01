@@ -5,8 +5,13 @@
         string Id,
         Vector[] Bewegingen)
     {
-        public Kaart ChangeOwner(Team? owner) 
+        public Kaart ChangeOwner(Team owner) 
             => this with { Owner = owner };
+
+        public Kaart MoveToStack()
+        {
+            return this with { Owner = null };
+        }
 
         public static Kaart Parse(string input)
         {

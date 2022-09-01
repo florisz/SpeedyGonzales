@@ -6,7 +6,7 @@
     "DebugPlayer": {
       "commandName": "Executable",
       "executablePath": "...\\..\\..\\..\\tools\\_Debug-player\\DebugPlayer.exe",
-      "commandLineArgs": "..\\..\\src\\SpeedyGonzales\\bin\\Debug\\net6.0\\SpeedyGonzales.exe",
+      "commandLineArgs": "..\\..\\src\\SpeedyGonzales\\bin\\Debug\\net6.0\\Player.exe",
       "workingDirectory": "...\\..\\..\\..\\tools\\_Debug-player\\"
     }
   }
