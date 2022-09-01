@@ -120,5 +120,58 @@ namespace SpeedyGonzales
                 writeLine(move.ToString());
             }
         }
+
+        public Score GetScore(Team voorTeam)
+        {
+            var hullie = voorTeam.TegenStander;
+            var onzeRenners = Bord.GetRennerPosities(voorTeam).ToArray();
+            var hunRenners = Bord.GetRennerPosities(hullie).ToArray();
+
+            var rennerOpOnzeWinstPositie = Bord[voorTeam.WinPositie].Renner;
+            var rennerOpHunWinstPositie = Bord[hullie.WinPositie].Renner;
+            var winst = (rennerOpOnzeWinstPositie != null && rennerOpOnzeWinstPositie.IsLeader && rennerOpOnzeWinstPositie.Team == voorTeam);
+            var verlies = (rennerOpHunWinstPositie != null && rennerOpHunWinstPositie.IsLeader && rennerOpHunWinstPositie.Team != voorTeam);
+
+            if (!onzeRenners.Any(p => Bord[p].Renner!.IsLeader))
+            {
+                winst = false;
+                verlies = true;
+            }
+            if (!hunRenners.Any(p => Bord[p].Renner!.IsLeader))
+            {
+                winst = true;
+            }
+
+            return new Score(
+                Winst: winst,
+                Verlies: verlies,
+                Renners: onzeRenners.Length,
+                Tegenstanders: hunRenners.Length);
+        }
+    }
+
+    public record Score(
+        bool Winst,
+        bool Verlies,
+        int Renners,
+        int Tegenstanders) 
+    {
+        public bool IsGameOver => Winst || Verlies;
+
+        public int AsNumber
+        {
+            get
+            {
+                if (Winst)
+                {
+                    return 10000;
+                }
+                if (Verlies)
+                {
+                    return -10000;
+                }
+                return Renners * 2 - Tegenstanders;
+            }
+        }
     }
 }

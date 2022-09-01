@@ -7,8 +7,8 @@ namespace SpeedyGonzales
         int Number,
         Positie WinPositie)
     {
-        public static readonly Team A = new Team("A", 0, new Positie(2, 0));
-        public static readonly Team B = new Team("B", 1, new Positie(2, 4));
+        public static readonly Team A = new Team("A", 0, new Positie(2, 4));
+        public static readonly Team B = new Team("B", 1, new Positie(2, 0));
 
         public Team TegenStander
             => this == A

@@ -25,6 +25,7 @@ void ReturnLine(string output)
 
 var wijInput = InputLine();
 var wij = Team.Parse(wijInput);
+var strategie = new Strategie();
 
 while (true)
 {
@@ -35,9 +36,12 @@ while (true)
     }
     else
     {
-        var move = gameState.Moves[0];
+        var bestMove = strategie.GetBestMove(gameState);
+        var move = bestMove ?? gameState.Moves[0];
+
         var newGameState = gameState.Play(move);
         newGameState.WriteTo(Console.Error.WriteLine);
+
         ReturnLine(move.ToString());
     }
 }
